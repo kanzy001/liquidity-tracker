@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-04-12T14:23:10.433853+00:00",
-  "scrape_started": "2026-04-12T14:23:02.680350+00:00",
+  "as_of": "2026-04-12T17:45:30.642827+00:00",
+  "scrape_started": "2026-04-12T17:45:22.909720+00:00",
   "status": "success",
   "errors": [],
   "fed_net_liquidity": {
@@ -22,18 +22,18 @@
   "cb_balance_sheets": {
     "date": "2026-04-08",
     "fed_bs": 6693871.0,
-    "ecb_bs": 6753706.56,
+    "ecb_bs": 0.0,
     "pboc_bs": 0.0,
-    "total_bs": 13447577.56
+    "total_bs": 6693871.0
   },
   "cb_rate_decisions": {
     "date": "2026-04-12",
     "hikes": 2,
-    "cuts": 10,
+    "cuts": 8,
     "holds": 2,
-    "total_cbs": 14,
-    "cut_ratio": 0.7143,
-    "hike_ratio": 0.1429,
+    "total_cbs": 12,
+    "cut_ratio": 0.6667,
+    "hike_ratio": 0.1667,
     "details": {
       "Federal Reserve": {
         "decision": "cut",
@@ -58,12 +58,6 @@
         "current": 2.25,
         "year_ago": 2.993,
         "delta_bps": -74.3
-      },
-      "Norges Bank": {
-        "decision": "cut",
-        "current": 4.0,
-        "year_ago": 4.5,
-        "delta_bps": -50.0
       },
       "Reserve Bank NZ": {
         "decision": "cut",
@@ -112,18 +106,12 @@
         "current": 3.96,
         "year_ago": 5.73,
         "delta_bps": -177.0
-      },
-      "Central Bank Turkey": {
-        "decision": "cut",
-        "current": 35.5,
-        "year_ago": 43.5,
-        "delta_bps": -800.0
       }
     }
   },
   "asset_prices": {
     "date": "2026-04-12",
     "spx": 6816.89,
-    "btc": 71047.0
+    "btc": 71003.0
   }
 }
