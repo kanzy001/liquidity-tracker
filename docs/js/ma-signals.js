@@ -131,24 +131,40 @@
   }
 
   // ----------------------------------------------------------
-  // FETCH PRICE DATA  (Yahoo Finance — no key required)
+  // FETCH PRICE DATA  (via CORS proxies — tries each in order)
   // ----------------------------------------------------------
 
   async function fetchSP500() {
-    const url = 'https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=1d&range=3y';
-    const res  = await fetch(url);
-    if (!res.ok) throw new Error('Yahoo Finance fetch failed: ' + res.status);
-    const json = await res.json();
-    const result = json.chart.result[0];
-    const rawCloses    = result.indicators.quote[0].close;
-    const timestamps   = result.timestamp;
-    // strip nulls (market holidays produce nulls)
-    const closes = rawCloses.filter(v => v != null);
-    const lastTs = timestamps[timestamps.length - 1];
-    const lastDate = new Date(lastTs * 1000).toLocaleDateString('en-US', {
-      weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
-    });
-    return { closes, lastDate };
+    const yahooUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=1d&range=3y';
+
+    // Try multiple proxies in order — first one that works wins
+    const proxies = [
+      `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`,
+      `https://proxy.cors.sh/${yahooUrl}`,
+    ];
+
+    let lastErr = null;
+    for (const proxyUrl of proxies) {
+      try {
+        const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const json = await res.json();
+        const result = json.chart.result[0];
+        const rawCloses  = result.indicators.quote[0].close;
+        const timestamps = result.timestamp;
+        const closes  = rawCloses.filter(v => v != null);
+        const lastTs  = timestamps[timestamps.length - 1];
+        const lastDate = new Date(lastTs * 1000).toLocaleDateString('en-US', {
+          weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+        });
+        return { closes, lastDate };
+      } catch (e) {
+        lastErr = e;
+        console.warn('[MASignals] proxy failed, trying next:', proxyUrl, e.message);
+      }
+    }
+    throw new Error('All proxies failed. Last error: ' + lastErr?.message);
   }
 
   // ----------------------------------------------------------
