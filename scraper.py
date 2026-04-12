@@ -222,24 +222,25 @@ def scrape_cb_balance_sheets() -> dict:
 # ── 4. CB Rate Hike / Cut Ratio ───────────────────────────────────────────────
 
 CB_SERIES = {
-    "Federal Reserve":      "FEDFUNDS",
-    "ECB":                  "ECBDFR",
-    "Bank of England":      "BOERUKM",
-    "Bank of Japan":        "IRSTCB01JPM156N",
-    "Reserve Bank Aus":     "RBATCTR",
-    "Bank of Canada":       "IRSTCB01CAM156N",
-    "Swiss Natl Bank":      "IRSTCB01CHM156N",
-    "Riksbank":             "IRSTCB01SEM156N",
-    "Norges Bank":          "IRSTCB01NOM156N",
-    "Reserve Bank NZ":      "IRSTCB01NZM156N",
-    "Peoples Bank China":   "IRSTCB01CNM156N",
-    "Reserve Bank India":   "IRSTCB01INM156N",
-    "Bank of Korea":        "IRSTCB01KRM156N",
-    "Bank of Mexico":       "IRSTCB01MXM156N",
-    "Central Bank Brazil":  "IRSTCB01BRM156N",
-    "SARB South Africa":    "IRSTCB01ZAM156N",
-    "Bank of Indonesia":    "IRSTCB01IDM156N",
-    "Central Bank Turkey":  "IRSTCB01TRM156N",
+    # Active, well-maintained FRED series for policy rates
+    "Federal Reserve":      "FEDFUNDS",        # US Fed Funds Rate (monthly)
+    "ECB":                  "ECBDFR",          # ECB Deposit Facility Rate
+    "Bank of England":      "BOERUKM",         # BoE Official Bank Rate
+    "Bank of Japan":        "IRSTCI01JPM156N", # Japan call rate
+    "Reserve Bank Aus":     "RBATCTR",         # RBA Cash Rate Target
+    "Bank of Canada":       "IRSTCI01CAM156N", # Canada overnight rate
+    "Swiss Natl Bank":      "IRSTCI01CHM156N", # SNB policy rate
+    "Riksbank Sweden":      "IRSTCI01SEM156N", # Sweden repo rate
+    "Norges Bank":          "IRSTCI01NOM156N", # Norway key rate
+    "Reserve Bank NZ":      "IRSTCI01NZM156N", # RBNZ official cash rate
+    "Peoples Bank China":   "IRSTCI01CNM156N", # China 1yr loan rate proxy
+    "Reserve Bank India":   "IRSTCI01INM156N", # India repo rate
+    "Bank of Korea":        "IRSTCI01KRM156N", # Korea base rate
+    "Bank of Mexico":       "IRSTCI01MXM156N", # Mexico overnight rate
+    "Central Bank Brazil":  "IRSTCI01BRM156N", # Brazil Selic rate
+    "SARB South Africa":    "IRSTCI01ZAM156N", # SA repo rate
+    "Bank of Indonesia":    "IRSTCI01IDM156N", # BI rate
+    "Central Bank Turkey":  "IRSTCI01TRM156N", # Turkey policy rate
 }
 THRESHOLD_BPS = 5
 
