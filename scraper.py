@@ -311,6 +311,76 @@ def scrape_cb_rate_decisions() -> dict:
     return row
 
 
+# ── 5. Asset Prices (S&P 500 + Bitcoin) ──────────────────────────────────────
+# S&P 500: FRED series SP500 (daily, confirmed active)
+# Bitcoin: Yahoo Finance via yfinance-style query (no API key needed)
+
+def scrape_asset_prices() -> dict:
+    log.info("[5] Asset Prices (S&P 500 + BTC)...")
+    path = DATA_DIR / "asset_prices.json"
+
+    # S&P 500 via FRED SP500 (daily closing price)
+    spx_rows = []
+    try:
+        obs = fred("SP500", limit=BACKFILL_MONTHS * 23)  # ~23 trading days/month
+        spx_rows = [(o["date"], round(float(o["value"]), 2)) for o in reversed(obs)]
+        log.info(f"  S&P 500: {len(spx_rows)} data points, latest {spx_rows[-1]}")
+    except Exception as e:
+        log.warning(f"  S&P 500 FRED failed: {e}")
+
+    # Bitcoin via Yahoo Finance (free, no key)
+    btc_rows = []
+    try:
+        end   = datetime.now(timezone.utc)
+        start = end - timedelta(days=BACKFILL_MONTHS * 31)
+        url = (
+            f"https://query1.finance.yahoo.com/v8/finance/chart/BTC-USD"
+            f"?interval=1wk&period1={int(start.timestamp())}&period2={int(end.timestamp())}"
+        )
+        headers = {"User-Agent": "Mozilla/5.0"}
+        r = requests.get(url, headers=headers, timeout=20)
+        r.raise_for_status()
+        data = r.json()
+        ts     = data["chart"]["result"][0]["timestamp"]
+        closes = data["chart"]["result"][0]["indicators"]["quote"][0]["close"]
+        for t, c in zip(ts, closes):
+            if c is not None:
+                date_str = datetime.fromtimestamp(t, tz=timezone.utc).strftime("%Y-%m-%d")
+                btc_rows.append((date_str, round(c, 0)))
+        log.info(f"  BTC: {len(btc_rows)} data points, latest {btc_rows[-1] if btc_rows else 'none'}")
+    except Exception as e:
+        log.warning(f"  BTC Yahoo Finance failed: {e}")
+
+    # Build unified date-keyed series
+    all_dates = sorted(set(
+        [d for d, _ in spx_rows] + [d for d, _ in btc_rows]
+    ))
+    spx_dict = {d: v for d, v in spx_rows}
+    btc_dict = {d: v for d, v in btc_rows}
+
+    rows = []
+    last_spx = last_btc = None
+    for date in all_dates:
+        if date in spx_dict:
+            last_spx = spx_dict[date]
+        if date in btc_dict:
+            last_btc = btc_dict[date]
+        rows.append({
+            "date": date,
+            "spx":  last_spx,
+            "btc":  last_btc,
+        })
+
+    if rows:
+        upsert_many(path, rows)
+        latest = rows[-1]
+        log.info(f"  Saved {len(rows)} price rows · SPX={latest['spx']} BTC={latest['btc']}")
+        return latest
+    else:
+        log.warning("  No price data saved")
+        return {}
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -329,6 +399,7 @@ def main():
         ("global_m2",         scrape_global_m2),
         ("cb_balance_sheets", scrape_cb_balance_sheets),
         ("cb_rate_decisions", scrape_cb_rate_decisions),
+        ("asset_prices",      scrape_asset_prices),
     ]:
         try:
             results[name] = fn()
