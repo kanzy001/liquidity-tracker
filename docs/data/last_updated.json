@@ -1,11 +1,12 @@
 {
-  "timestamp": "2026-04-12T13:50:10.789680+00:00",
+  "timestamp": "2026-04-12T14:20:54.050002+00:00",
   "status": "success",
   "succeeded": [
     "fed_net_liquidity",
     "global_m2",
     "cb_balance_sheets",
-    "cb_rate_decisions"
+    "cb_rate_decisions",
+    "asset_prices"
   ],
   "errors": []
 }
