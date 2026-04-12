@@ -192,6 +192,16 @@ footer {
 footer a { color: var(--muted); text-decoration: underline; }
 
 /* ── States ── */
+.overlay-btn {
+  font-size: 11px; padding: 5px 12px; border-radius: 6px;
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; transition: all .15s;
+}
+.overlay-btn.active {
+  background: var(--surface); border-color: rgba(255,255,255,0.2);
+  color: var(--text); font-weight: 500;
+}
+.overlay-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
 .loading { color: var(--muted); font-size: 12px; }
 .error-banner {
   background: rgba(240,100,90,.1); border: 1px solid rgba(240,100,90,.2);
@@ -277,6 +287,20 @@ footer a { color: var(--muted); text-decoration: underline; }
     </div>
   </div>
 
+  <!-- Overlay toggle -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+    <div style="font-size:12px;color:var(--muted);">Price overlay — toggle on each chart to compare assets vs liquidity</div>
+    <div style="display:flex;gap:6px;">
+      <button id="btn-spx" class="overlay-btn active" onclick="toggleOverlay('spx')">
+        <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#f5a623;margin-right:5px;vertical-align:middle;"></span>S&P 500
+      </button>
+      <button id="btn-btc" class="overlay-btn" onclick="toggleOverlay('btc')">
+        <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#f0645a;margin-right:5px;vertical-align:middle;"></span>Bitcoin
+      </button>
+      <button id="btn-none" class="overlay-btn" onclick="toggleOverlay('none')">No overlay</button>
+    </div>
+  </div>
+
   <!-- 4 time-series charts -->
   <div class="charts">
     <div class="chart-card">
@@ -285,7 +309,7 @@ footer a { color: var(--muted); text-decoration: underline; }
         <span class="chart-badge fred">FRED daily</span>
       </div>
       <div class="chart-desc">FedAssets − TGA − RRP · USD Billions · most real-time crypto/equity signal</div>
-      <div class="chart-wrap"><canvas id="c-fed" role="img" aria-label="Fed net liquidity time series"></canvas></div>
+      <div class="chart-wrap"><canvas id="c-fed" role="img" aria-label="Fed net liquidity vs S&P 500"></canvas></div>
     </div>
     <div class="chart-card">
       <div class="chart-head">
@@ -293,7 +317,7 @@ footer a { color: var(--muted); text-decoration: underline; }
         <span class="chart-badge multi">4 sources</span>
       </div>
       <div class="chart-desc">Combined US + CN + EU + JP · USD Billions equivalent</div>
-      <div class="chart-wrap"><canvas id="c-m2" role="img" aria-label="Global M2 time series"></canvas></div>
+      <div class="chart-wrap"><canvas id="c-m2" role="img" aria-label="Global M2 vs S&P 500"></canvas></div>
     </div>
     <div class="chart-card">
       <div class="chart-head">
@@ -301,7 +325,7 @@ footer a { color: var(--muted); text-decoration: underline; }
         <span class="chart-badge ecb">Fed + ECB + PBOC</span>
       </div>
       <div class="chart-desc">Combined assets · USD Billions · expansion = liquidity positive</div>
-      <div class="chart-wrap"><canvas id="c-cbs" role="img" aria-label="Central bank balance sheets time series"></canvas></div>
+      <div class="chart-wrap"><canvas id="c-cbs" role="img" aria-label="CB balance sheets vs S&P 500"></canvas></div>
     </div>
     <div class="chart-card">
       <div class="chart-head">
@@ -309,7 +333,7 @@ footer a { color: var(--muted); text-decoration: underline; }
         <span class="chart-badge fred">18 CBs · FRED</span>
       </div>
       <div class="chart-desc">Share cutting vs 12 months ago · 1.0 = all cutting · 0 = all hiking</div>
-      <div class="chart-wrap"><canvas id="c-cuts" role="img" aria-label="CB rate cut ratio time series"></canvas></div>
+      <div class="chart-wrap"><canvas id="c-cuts" role="img" aria-label="CB rate cut ratio vs S&P 500"></canvas></div>
     </div>
   </div>
 
@@ -342,76 +366,149 @@ footer a { color: var(--muted); text-decoration: underline; }
 <script>
 const BASE = 'data/';
 const COLORS = {
-  fed:   '#5b9cf6',
-  m2:    '#3ddc84',
-  cbs:   '#9b7fee',
-  cuts:  '#f5a623',
-  hike:  '#f0645a',
-  cut:   '#3ddc84',
-  hold:  '#636b8a',
+  fed:  '#5b9cf6', m2: '#3ddc84', cbs: '#9b7fee', cuts: '#f5a623',
+  spx:  '#f5a623', btc: '#f0645a', hike: '#f0645a', cut: '#3ddc84', hold: '#636b8a',
 };
 
-// ── Chart.js defaults ────────────────────────────────────────────────────────
 Chart.defaults.color = '#636b8a';
 Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
 Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 Chart.defaults.font.size = 11;
 
 const charts = {};
+let priceData = null;   // loaded once, reused by all charts
+let activeOverlay = 'spx';  // 'spx' | 'btc' | 'none'
 
-function buildLine(id, labels, data, color, yLabel = '', areaColor = null) {
+// ── Chart builder with optional price overlay ────────────────────────────────
+function buildOverlayChart(id, labels, data, color, yLabel, overlayKey) {
   if (charts[id]) charts[id].destroy();
   const ctx = document.getElementById(id).getContext('2d');
-  const area = areaColor || color + '18';
+
+  const datasets = [{
+    label: yLabel || 'Value',
+    data,
+    borderColor: color,
+    borderWidth: 2,
+    pointRadius: 0,
+    pointHoverRadius: 4,
+    fill: true,
+    backgroundColor: (ctx) => {
+      const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 220);
+      g.addColorStop(0, color + '28'); g.addColorStop(1, color + '00');
+      return g;
+    },
+    tension: 0.4,
+    yAxisID: 'y',
+  }];
+
+  const scales = {
+    x: {
+      ticks: { maxTicksLimit: 8, maxRotation: 0 },
+      grid:  { color: 'rgba(255,255,255,0.04)' },
+    },
+    y: {
+      position: 'left',
+      ticks: {},
+      grid: { color: 'rgba(255,255,255,0.04)' },
+      title: { display: !!yLabel, text: yLabel, color: '#636b8a', font: { size: 10 } },
+    },
+  };
+
+  // Inject price overlay if data available and overlay is active
+  if (overlayKey !== 'none' && priceData && priceData.length > 0) {
+    // Align price series to the same date labels
+    const priceMap = {};
+    priceData.forEach(r => { if (r[overlayKey] != null) priceMap[r.date] = r[overlayKey]; });
+
+    // Forward-fill so every label has a value
+    let lastVal = null;
+    const alignedPrices = labels.map(d => {
+      if (priceMap[d] != null) lastVal = priceMap[d];
+      return lastVal;
+    });
+
+    const overlayColor = COLORS[overlayKey];
+    const overlayLabel = overlayKey === 'spx' ? 'S&P 500' : 'Bitcoin (USD)';
+
+    datasets.push({
+      label: overlayLabel,
+      data: alignedPrices,
+      borderColor: overlayColor,
+      borderWidth: 1.5,
+      borderDash: [4, 3],
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      fill: false,
+      tension: 0.4,
+      yAxisID: 'y2',
+    });
+
+    scales.y2 = {
+      position: 'right',
+      grid: { drawOnChartArea: false },
+      ticks: {
+        color: overlayColor,
+        font: { size: 10 },
+        callback: v => overlayKey === 'spx'
+          ? v >= 1000 ? (v/1000).toFixed(1)+'k' : v
+          : v >= 1000 ? '$'+(v/1000).toFixed(0)+'k' : '$'+v,
+      },
+      title: { display: true, text: overlayLabel, color: overlayColor, font: { size: 10 } },
+    };
+  }
+
   charts[id] = new Chart(ctx, {
     type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data,
-        borderColor: color,
-        borderWidth: 2,
-        pointRadius: 0,
-        pointHoverRadius: 4,
-        pointHoverBackgroundColor: color,
-        fill: true,
-        backgroundColor: (ctx) => {
-          const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 200);
-          g.addColorStop(0, color + '28');
-          g.addColorStop(1, color + '00');
-          return g;
-        },
-        tension: 0.4,
-      }]
-    },
+    data: { labels, datasets },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { display: false },
+        legend: { display: datasets.length > 1, position: 'top',
+          labels: { boxWidth: 10, padding: 10, font: { size: 10 } } },
         tooltip: {
           backgroundColor: '#1c2030',
-          borderColor: 'rgba(255,255,255,0.1)',
-          borderWidth: 1,
-          padding: 10,
-          callbacks: { label: (c) => ' ' + c.parsed.y.toLocaleString(undefined, {maximumFractionDigits: 1}) }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { maxTicksLimit: 8, maxRotation: 0 },
-          grid: { color: 'rgba(255,255,255,0.04)' }
+          borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, padding: 10,
+          callbacks: {
+            label: c => ' ' + c.dataset.label + ': ' +
+              c.parsed.y?.toLocaleString(undefined, { maximumFractionDigits: 1 }),
+          },
         },
-        y: {
-          ticks: {},
-          grid: { color: 'rgba(255,255,255,0.04)' },
-          title: { display: !!yLabel, text: yLabel, font: { size: 10 } }
-        }
-      }
-    }
+      },
+      scales,
+    },
   });
 }
 
+// ── Overlay toggle ────────────────────────────────────────────────────────────
+function toggleOverlay(key) {
+  activeOverlay = key;
+  document.querySelectorAll('.overlay-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + key).classList.add('active');
+  if (window._lastChartData) rebuildCharts(window._lastChartData);
+}
+
+function rebuildCharts({ fedSeries, m2Series, cbsSeries, ratesSeries }) {
+  if (fedSeries?.length) {
+    buildOverlayChart('c-fed', fedSeries.map(r=>r.date), fedSeries.map(r=>r.net_liq),
+      COLORS.fed, 'USD Billions', activeOverlay);
+  }
+  if (m2Series?.length) {
+    buildOverlayChart('c-m2', m2Series.map(r=>r.date), m2Series.map(r=>r.global_m2),
+      COLORS.m2, 'USD Billions', activeOverlay);
+  }
+  if (cbsSeries?.length) {
+    buildOverlayChart('c-cbs', cbsSeries.map(r=>r.date), cbsSeries.map(r=>r.total_bs),
+      COLORS.cbs, 'USD Billions', activeOverlay);
+  }
+  if (ratesSeries?.length) {
+    buildOverlayChart('c-cuts', ratesSeries.map(r=>r.date), ratesSeries.map(r=>r.cut_ratio),
+      COLORS.cuts, 'Ratio 0–1', activeOverlay);
+  }
+}
+
+// ── Donut chart ───────────────────────────────────────────────────────────────
 function buildDonut(hikes, cuts, holds) {
   if (charts.donut) charts.donut.destroy();
   const ctx = document.getElementById('c-donut').getContext('2d');
@@ -419,69 +516,57 @@ function buildDonut(hikes, cuts, holds) {
     type: 'doughnut',
     data: {
       labels: ['Hikes', 'Holds', 'Cuts'],
-      datasets: [{
-        data: [hikes, holds, cuts],
+      datasets: [{ data: [hikes, holds, cuts],
         backgroundColor: [COLORS.hike, COLORS.hold, COLORS.cut],
-        borderWidth: 0,
-        hoverOffset: 4,
-      }]
+        borderWidth: 0, hoverOffset: 4 }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '70%',
-      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1c2030', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 } }
+      responsive: true, maintainAspectRatio: false, cutout: '70%',
+      plugins: { legend: { display: false },
+        tooltip: { backgroundColor: '#1c2030', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 } }
     }
   });
-
   const total = hikes + cuts + holds;
   document.getElementById('donut-legend').innerHTML = [
-    ['Hikes', hikes, COLORS.hike],
-    ['Holds', holds, COLORS.hold],
-    ['Cuts',  cuts,  COLORS.cut ],
+    ['Hikes', hikes, COLORS.hike], ['Holds', holds, COLORS.hold], ['Cuts', cuts, COLORS.cut],
   ].map(([label, val, color]) => `
     <div class="donut-leg-item">
       <div class="donut-leg-dot" style="background:${color}"></div>
       <span class="donut-leg-label">${label}</span>
-      <span class="donut-leg-val" style="color:${color}">${val} <span style="font-size:10px;color:var(--muted)">(${total ? Math.round(val/total*100) : 0}%)</span></span>
+      <span class="donut-leg-val" style="color:${color}">${val}
+        <span style="font-size:10px;color:var(--muted)">(${total?Math.round(val/total*100):0}%)</span>
+      </span>
     </div>`).join('');
 }
 
-// ── Formatters ───────────────────────────────────────────────────────────────
-function fmtB(n, dp = 1) {
+// ── Formatters ────────────────────────────────────────────────────────────────
+function fmtB(n, dp=1) {
   if (n == null) return '—';
-  if (Math.abs(n) >= 1000) return '$' + (n/1000).toFixed(dp) + 'T';
-  return '$' + n.toFixed(dp) + 'B';
+  return (Math.abs(n) >= 1000 ? '$'+(n/1000).toFixed(dp)+'T' : '$'+n.toFixed(dp)+'B');
 }
-function fmtPct(n, dp = 1) {
+function fmtPct(n, dp=1) {
   if (n == null) return '—';
-  return (n >= 0 ? '+' : '') + n.toFixed(dp) + '%';
+  return (n>=0?'+':'')+n.toFixed(dp)+'%';
 }
 function fmtDate(iso) {
   if (!iso) return '—';
-  return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+  return new Date(iso).toLocaleString(undefined, {dateStyle:'medium',timeStyle:'short'});
 }
 
-// ── 65-month cycle position ───────────────────────────────────────────────────
-// Cycle 1: Oct 2019 → Feb 2025 (ended)
-// Cycle 2: Jan 2026 → May 2031 (current — liquidity trough ~Q4 2025)
+// ── 65-month cycle ────────────────────────────────────────────────────────────
 function updateCycle() {
   const cycleStart = new Date('2026-01-01');
   const cycleEnd   = new Date(cycleStart);
   cycleEnd.setMonth(cycleEnd.getMonth() + 65);
   const now = new Date();
-  const totalMs  = cycleEnd - cycleStart;
-  const elapsedMs = Math.max(now - cycleStart, 0);
-  const pct      = Math.min(elapsedMs / totalMs, 1);
+  const pct = Math.min(Math.max((now - cycleStart) / (cycleEnd - cycleStart), 0), 1);
   const monthNum = Math.max(1, Math.round(pct * 65));
   const isRising = pct < (41/65);
-
-  document.getElementById('cycle-pin').style.left = (pct * 100).toFixed(1) + '%';
+  document.getElementById('cycle-pin').style.left = (pct*100).toFixed(1)+'%';
   document.getElementById('cycle-pos').textContent = `Cycle month ${monthNum}/65`;
   document.getElementById('cycle-label-mid').textContent = isRising
     ? `Rising phase · month ${monthNum} of 41`
-    : `Contraction phase · month ${monthNum - 41} of 24`;
-
+    : `Contraction phase · month ${monthNum-41} of 24`;
   const pb = document.getElementById('phase-badge');
   pb.textContent = isRising ? 'Rising Liquidity Phase' : 'Contraction Phase';
   pb.className   = 'phase-badge ' + (isRising ? 'rising' : 'contracting');
@@ -494,91 +579,78 @@ async function loadJSON(file) {
   return r.json();
 }
 
-function mapSeries(data, field) {
-  return {
-    labels: data.map(r => r.date),
-    vals:   data.map(r => r[field]),
-  };
-}
-
-function showError(msg) {
-  const el = document.getElementById('error-banner');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
 async function loadAll() {
   document.getElementById('error-banner').style.display = 'none';
   try {
-    const [summary, fedSeries, m2Series, cbsSeries, ratesSeries] = await Promise.all([
+    const [summary, fedSeries, m2Series, cbsSeries, ratesSeries, prices] = await Promise.all([
       loadJSON('summary.json'),
       loadJSON('fed_net_liquidity.json'),
       loadJSON('global_m2.json'),
       loadJSON('cb_balance_sheets.json'),
       loadJSON('cb_rate_decisions.json'),
+      loadJSON('asset_prices.json').catch(() => []),
     ]);
 
-    // ── Scrape status ──
-    if (summary.errors && summary.errors.length) {
-      showError('Last scrape had errors: ' + summary.errors.join(' · '));
-    }
-    document.getElementById('last-updated').textContent =
-      'Updated ' + fmtDate(summary.as_of);
+    // Store price data globally for overlay rebuilds
+    priceData = Array.isArray(prices) ? prices : [];
 
-    // ── Metric cards ──
+    if (summary.errors?.length) {
+      const el = document.getElementById('error-banner');
+      el.textContent = 'Last scrape had errors: ' + summary.errors.join(' · ');
+      el.style.display = 'block';
+    }
+    document.getElementById('last-updated').textContent = 'Updated ' + fmtDate(summary.as_of);
+
+    // Metric cards
     const fed   = summary.fed_net_liquidity  || {};
     const m2    = summary.global_m2          || {};
     const cbs   = summary.cb_balance_sheets  || {};
     const rates = summary.cb_rate_decisions  || {};
 
-    document.getElementById('m-fedliq').textContent    = fmtB(fed.net_liq);
+    document.getElementById('m-fedliq').textContent =  fmtB(fed.net_liq);
     document.getElementById('m-fedliq-sub').textContent =
       `Fed ${fmtB(fed.fed_assets)} · TGA ${fmtB(fed.tga)} · RRP ${fmtB(fed.rrp)}`;
-
-    document.getElementById('m-m2yoy').textContent     = fmtPct(m2.yoy_pct);
-    document.getElementById('m-m2-sub').textContent    =
+    document.getElementById('m-m2yoy').textContent  = fmtPct(m2.yoy_pct);
+    document.getElementById('m-m2-sub').textContent =
       `Total ${fmtB(m2.global_m2)} · US ${fmtB(m2.us_m2)} · CN ${fmtB(m2.cn_m2)} · EU ${fmtB(m2.eu_m2)} · JP ${fmtB(m2.jp_m2)}`;
-
-    document.getElementById('m-cbs').textContent       = fmtB(cbs.total_bs);
-    document.getElementById('m-cbs-sub').textContent   =
+    document.getElementById('m-cbs').textContent    = fmtB(cbs.total_bs);
+    document.getElementById('m-cbs-sub').textContent =
       `Fed ${fmtB(cbs.fed_bs)} · ECB ${fmtB(cbs.ecb_bs)} · PBOC ${fmtB(cbs.pboc_bs)}`;
+    const cutPct = rates.cut_ratio != null ? Math.round(rates.cut_ratio*100) : null;
+    document.getElementById('m-cutratio').textContent = cutPct != null ? cutPct+'%' : '—';
+    document.getElementById('m-cutratio-sub').textContent = rates.total_cbs
+      ? `${rates.cuts} cuts · ${rates.hikes} hikes · ${rates.holds} holds of ${rates.total_cbs} banks`
+      : 'of 18 tracked central banks cutting';
 
-    const cutPct = rates.cut_ratio != null ? Math.round(rates.cut_ratio * 100) : null;
-    document.getElementById('m-cutratio').textContent  = cutPct != null ? cutPct + '%' : '—';
-    document.getElementById('m-cutratio-sub').textContent =
-      rates.total_cbs
-        ? `${rates.cuts} cuts · ${rates.hikes} hikes · ${rates.holds} holds of ${rates.total_cbs} banks`
-        : 'of 18 tracked central banks cutting';
+    // Phase badge
+    const cutRatio = rates.cut_ratio || 0;
+    const ph = document.getElementById('phase-badge');
+    if (cutRatio >= 0.5) { ph.textContent='Rising Liquidity Phase'; ph.className='phase-badge rising'; }
+    else { ph.textContent='Contraction Phase'; ph.className='phase-badge contracting'; }
 
-    // ── Time series charts ──
-    if (fedSeries.length) {
-      const { labels, vals } = mapSeries(fedSeries, 'net_liq');
-      buildLine('c-fed', labels, vals, COLORS.fed, 'USD Billions');
-    }
-    if (m2Series.length) {
-      const { labels, vals } = mapSeries(m2Series, 'global_m2');
-      buildLine('c-m2', labels, vals, COLORS.m2, 'USD Billions');
-    }
-    if (cbsSeries.length) {
-      const { labels, vals } = mapSeries(cbsSeries, 'total_bs');
-      buildLine('c-cbs', labels, vals, COLORS.cbs, 'USD Billions');
-    }
-    if (ratesSeries.length) {
-      const { labels, vals } = mapSeries(ratesSeries, 'cut_ratio');
-      buildLine('c-cuts', labels, vals, COLORS.cuts, 'Ratio 0–1');
+    // Cache series for overlay toggle rebuilds
+    window._lastChartData = { fedSeries, m2Series, cbsSeries, ratesSeries };
+    rebuildCharts(window._lastChartData);
+
+    // Show latest SPX/BTC in header if available
+    if (priceData.length) {
+      const latest = [...priceData].reverse().find(r => r.spx);
+      if (latest) {
+        document.getElementById('last-updated').textContent =
+          `Updated ${fmtDate(summary.as_of)} · SPX ${latest.spx?.toLocaleString() ?? '—'}` +
+          (latest.btc ? ` · BTC $${(latest.btc/1000).toFixed(1)}k` : '');
+      }
     }
 
-    // ── Donut & rate grid ──
-    buildDonut(rates.hikes || 0, rates.cuts || 0, rates.holds || 0);
-
+    // Rate donut + grid
+    buildDonut(rates.hikes||0, rates.cuts||0, rates.holds||0);
     document.getElementById('rate-totals').textContent =
-      `vs 12 months ago · auto-classified · ${rates.total_cbs || 0} banks tracked`;
-
+      `vs 12 months ago · auto-classified · ${rates.total_cbs||0} banks tracked`;
     const det = rates.details || {};
     if (Object.keys(det).length) {
       document.getElementById('rate-grid').innerHTML = Object.entries(det)
-        .sort((a, b) => Math.abs(b[1].delta_bps) - Math.abs(a[1].delta_bps))
-        .map(([cb, d]) => `
+        .sort((a,b) => Math.abs(b[1].delta_bps) - Math.abs(a[1].delta_bps))
+        .map(([cb,d]) => `
           <div class="rate-item">
             <span class="rate-name" title="${cb}">${cb}</span>
             <div class="rate-right">
@@ -591,20 +663,20 @@ async function loadAll() {
         '<div class="loading">No rate data yet — trigger the GitHub Action to scrape.</div>';
     }
 
-  } catch (e) {
+  } catch(e) {
     console.error(e);
-    showError('Could not load data files. ' + (
-      location.protocol === 'file:'
-        ? 'Open via a local server or deploy to GitHub Pages first.'
-        : 'Check that the GitHub Actions scrape has run at least once.'
-    ));
+    const el = document.getElementById('error-banner');
+    el.textContent = 'Could not load data. ' + (location.protocol==='file:'
+      ? 'Open via a local server or deploy to GitHub Pages.'
+      : 'Check that the GitHub Actions scrape has run at least once.');
+    el.style.display = 'block';
   }
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
 updateCycle();
 loadAll();
-setInterval(loadAll, 300_000); // re-fetch every 5 min
+setInterval(loadAll, 300_000);
 </script>
+
 </body>
 </html>
