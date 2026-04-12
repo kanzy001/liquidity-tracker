@@ -236,10 +236,10 @@ footer a { color: var(--muted); text-decoration: underline; }
       <div class="cycle-pin" id="cycle-pin" style="left: 63.1%;"></div>
     </div>
     <div class="cycle-labels">
-      <span>Cycle start · Oct 2019</span>
+      <span>Cycle start · Jan 2026</span>
       <span id="cycle-label-mid">Rising phase (months 1–41)</span>
       <span>Contraction phase (months 42–65)</span>
-      <span>Cycle end · Mar 2025</span>
+      <span>Cycle end · May 2031</span>
     </div>
     <div class="tags">
       <span class="tag buy">Equities risk-on</span>
@@ -463,15 +463,17 @@ function fmtDate(iso) {
 }
 
 // ── 65-month cycle position ───────────────────────────────────────────────────
+// Cycle 1: Oct 2019 → Feb 2025 (ended)
+// Cycle 2: Jan 2026 → May 2031 (current — liquidity trough ~Q4 2025)
 function updateCycle() {
-  const cycleStart = new Date('2019-10-01');
+  const cycleStart = new Date('2026-01-01');
   const cycleEnd   = new Date(cycleStart);
   cycleEnd.setMonth(cycleEnd.getMonth() + 65);
   const now = new Date();
-  const totalMs = cycleEnd - cycleStart;
-  const elapsedMs = now - cycleStart;
-  const pct = Math.min(Math.max(elapsedMs / totalMs, 0), 1);
-  const monthNum = Math.round(pct * 65);
+  const totalMs  = cycleEnd - cycleStart;
+  const elapsedMs = Math.max(now - cycleStart, 0);
+  const pct      = Math.min(elapsedMs / totalMs, 1);
+  const monthNum = Math.max(1, Math.round(pct * 65));
   const isRising = pct < (41/65);
 
   document.getElementById('cycle-pin').style.left = (pct * 100).toFixed(1) + '%';
