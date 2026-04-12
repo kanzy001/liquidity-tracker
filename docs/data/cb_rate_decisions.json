@@ -1,1 +1,25 @@
-[]
+[
+  {
+    "date": "2026-04-12",
+    "hikes": 0,
+    "cuts": 1,
+    "holds": 1,
+    "total_cbs": 2,
+    "cut_ratio": 0.5,
+    "hike_ratio": 0.0,
+    "details": {
+      "Federal Reserve": {
+        "decision": "cut",
+        "current": 3.64,
+        "year_ago": 4.33,
+        "delta_bps": -69.0
+      },
+      "ECB": {
+        "decision": "hold",
+        "current": 2.0,
+        "year_ago": 2.0,
+        "delta_bps": 0.0
+      }
+    }
+  }
+]

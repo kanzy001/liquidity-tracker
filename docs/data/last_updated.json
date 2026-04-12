@@ -1,1 +1,11 @@
-{"timestamp": null, "status": "pending", "succeeded": [], "errors": []}
+{
+  "timestamp": "2026-04-12T13:24:07.211244+00:00",
+  "status": "success",
+  "succeeded": [
+    "fed_net_liquidity",
+    "global_m2",
+    "cb_balance_sheets",
+    "cb_rate_decisions"
+  ],
+  "errors": []
+}
