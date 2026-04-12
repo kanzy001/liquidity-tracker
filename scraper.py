@@ -381,6 +381,55 @@ def scrape_asset_prices() -> dict:
         return {}
 
 
+# ── 6. S&P 500 Moving Averages ────────────────────────────────────────────────
+
+def scrape_sp500_ma():
+    log.info("[6] S&P 500 Moving Averages...")
+    path = DATA_DIR / "sp500_ma.json"
+
+    obs = fred("SP500", limit=800)
+    if not obs:
+        log.warning("  SP500 returned no data"); return {}
+
+    closes = [round(float(o["value"]), 2) for o in reversed(obs)]
+    dates  = [o["date"] for o in reversed(obs)]
+
+    def sma(arr, n):
+        return [round(sum(arr[i-n:i])/n, 2) if i >= n else None for i in range(len(arr))]
+
+    def ema_series(arr, n):
+        k = 2/(n+1)
+        out = [None]*len(arr)
+        for i, v in enumerate(arr):
+            if i == 0: out[i] = v; continue
+            out[i] = round(v*k + (out[i-1] or v)*(1-k), 2)
+        return out
+
+    s50  = sma(closes, 50)
+    s200 = sma(closes, 200)
+    e21  = ema_series(closes, 21)
+    last = len(closes) - 1
+
+    payload = {
+        "as_of":  dates[last],
+        "price":  closes[last],
+        "sma50":  s50[last],
+        "sma200": s200[last],
+        "ema21":  e21[last],
+        "series": {
+            "dates":  dates[-300:],
+            "closes": closes[-300:],
+            "sma50":  s50[-300:],
+            "sma200": s200[-300:],
+            "ema21":  e21[-300:],
+        }
+    }
+
+    path.write_text(json.dumps(payload, indent=2))
+    log.info(f"  S&P 500 MA saved · price={closes[last]} sma50={s50[last]} sma200={s200[last]}")
+    return payload
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -400,6 +449,7 @@ def main():
         ("cb_balance_sheets", scrape_cb_balance_sheets),
         ("cb_rate_decisions", scrape_cb_rate_decisions),
         ("asset_prices",      scrape_asset_prices),
+        ("sp500_ma",          scrape_sp500_ma),
     ]:
         try:
             results[name] = fn()
