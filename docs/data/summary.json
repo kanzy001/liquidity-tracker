@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-04-12T13:39:44.822877+00:00",
-  "scrape_started": "2026-04-12T13:39:38.409476+00:00",
+  "as_of": "2026-04-12T13:50:10.789268+00:00",
+  "scrape_started": "2026-04-12T13:50:01.539899+00:00",
   "status": "success",
   "errors": [],
   "fed_net_liquidity": {
@@ -22,9 +22,9 @@
   "cb_balance_sheets": {
     "date": "2026-04-08",
     "fed_bs": 6693871.0,
-    "ecb_bs": 6753.71,
+    "ecb_bs": 6753706.56,
     "pboc_bs": 0.0,
-    "total_bs": 6700624.71
+    "total_bs": 13447577.56
   },
   "cb_rate_decisions": {
     "date": "2026-04-12",
@@ -68,8 +68,8 @@
       "Reserve Bank NZ": {
         "decision": "cut",
         "current": 4.33,
-        "year_ago": 4.79,
-        "delta_bps": -46.0
+        "year_ago": 5.38,
+        "delta_bps": -105.0
       },
       "Peoples Bank China": {
         "decision": "hold",
