@@ -2377,11 +2377,11 @@
   {
     "date": "2026-04-12",
     "hikes": 2,
-    "cuts": 8,
+    "cuts": 10,
     "holds": 2,
-    "total_cbs": 12,
-    "cut_ratio": 0.6667,
-    "hike_ratio": 0.1667,
+    "total_cbs": 14,
+    "cut_ratio": 0.7143,
+    "hike_ratio": 0.1429,
     "details": {
       "Federal Reserve": {
         "decision": "cut",
@@ -2406,6 +2406,12 @@
         "current": 2.25,
         "year_ago": 2.993,
         "delta_bps": -74.3
+      },
+      "Norges Bank": {
+        "decision": "cut",
+        "current": 4.0,
+        "year_ago": 4.5,
+        "delta_bps": -50.0
       },
       "Reserve Bank NZ": {
         "decision": "cut",
@@ -2454,6 +2460,12 @@
         "current": 3.96,
         "year_ago": 5.73,
         "delta_bps": -177.0
+      },
+      "Central Bank Turkey": {
+        "decision": "cut",
+        "current": 35.5,
+        "year_ago": 43.5,
+        "delta_bps": -800.0
       }
     }
   }
