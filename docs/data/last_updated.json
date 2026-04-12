@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-04-12T18:03:29.676563+00:00",
-  "status": "partial",
+  "timestamp": "2026-04-12T18:13:57.436605+00:00",
+  "status": "success",
   "succeeded": [
     "fed_net_liquidity",
+    "global_m2",
     "cb_balance_sheets",
     "cb_rate_decisions",
-    "asset_prices"
+    "asset_prices",
+    "sp500_ma"
   ],
-  "errors": [
-    "global_m2: 500 Server Error: Internal Server Error for url: https://api.stlouisfed.org/fred/series/observations?series_id=M2SL&api_key=f1c6e69efac7f3d864b84e9bf2e794e9&file_type=json&sort_order=desc&limit=28&observation_start=2024-03-29"
-  ]
+  "errors": []
 }
