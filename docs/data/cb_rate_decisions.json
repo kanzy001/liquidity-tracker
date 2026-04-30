@@ -4077,5 +4077,76 @@
         "delta_bps": -800.0
       }
     }
+  },
+  {
+    "date": "2026-04-30",
+    "hikes": 1,
+    "cuts": 8,
+    "holds": 1,
+    "total_cbs": 10,
+    "cut_ratio": 0.8,
+    "hike_ratio": 0.1,
+    "details": {
+      "Federal Reserve": {
+        "decision": "cut",
+        "current": 3.64,
+        "year_ago": 4.33,
+        "delta_bps": -69.0
+      },
+      "ECB": {
+        "decision": "hold",
+        "current": 2.0,
+        "year_ago": 2.0,
+        "delta_bps": 0.0
+      },
+      "Bank of Japan": {
+        "decision": "hike",
+        "current": 0.728,
+        "year_ago": 0.477,
+        "delta_bps": 25.1
+      },
+      "Bank of Canada": {
+        "decision": "cut",
+        "current": 2.26,
+        "year_ago": 2.841,
+        "delta_bps": -58.1
+      },
+      "Norges Bank": {
+        "decision": "cut",
+        "current": 4.0,
+        "year_ago": 4.5,
+        "delta_bps": -50.0
+      },
+      "Reserve Bank NZ": {
+        "decision": "cut",
+        "current": 4.33,
+        "year_ago": 5.47,
+        "delta_bps": -114.0
+      },
+      "Reserve Bank India": {
+        "decision": "cut",
+        "current": 5.5,
+        "year_ago": 6.5,
+        "delta_bps": -100.0
+      },
+      "SARB South Africa": {
+        "decision": "cut",
+        "current": 6.75,
+        "year_ago": 7.5,
+        "delta_bps": -75.0
+      },
+      "Bank of Indonesia": {
+        "decision": "cut",
+        "current": 4.11,
+        "year_ago": 5.84,
+        "delta_bps": -173.0
+      },
+      "Central Bank Turkey": {
+        "decision": "cut",
+        "current": 35.5,
+        "year_ago": 43.5,
+        "delta_bps": -800.0
+      }
+    }
   }
 ]

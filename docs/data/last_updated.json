@@ -1,14 +1,13 @@
 {
-  "timestamp": "2026-04-29T08:01:43.949381+00:00",
-  "status": "partial",
+  "timestamp": "2026-04-30T08:05:18.858237+00:00",
+  "status": "success",
   "succeeded": [
+    "fed_net_liquidity",
     "global_m2",
     "cb_balance_sheets",
     "cb_rate_decisions",
     "asset_prices",
     "sp500_ma"
   ],
-  "errors": [
-    "fed_net_liquidity: 500 Server Error: Internal Server Error for url: https://api.stlouisfed.org/fred/series/observations?series_id=WALCL&api_key=f1c6e69efac7f3d864b84e9bf2e794e9&file_type=json&sort_order=desc&limit=10&observation_start=2024-04-15"
-  ]
+  "errors": []
 }
