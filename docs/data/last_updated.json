@@ -1,13 +1,14 @@
 {
-  "timestamp": "2026-05-30T08:17:16.913004+00:00",
-  "status": "success",
+  "timestamp": "2026-05-31T08:34:47.328674+00:00",
+  "status": "partial",
   "succeeded": [
-    "fed_net_liquidity",
-    "global_m2",
-    "cb_balance_sheets",
     "cb_rate_decisions",
     "asset_prices",
     "sp500_ma"
   ],
-  "errors": []
+  "errors": [
+    "fed_net_liquidity: 429 Client Error: Too Many Requests for url: https://api.stlouisfed.org/fred/series/observations?series_id=RRPONTSYD&api_key=f1c6e69efac7f3d864b84e9bf2e794e9&file_type=json&sort_order=desc&limit=10&observation_start=2024-05-17",
+    "global_m2: 429 Client Error: Too Many Requests for url: https://api.stlouisfed.org/fred/series/observations?series_id=M2SL&api_key=f1c6e69efac7f3d864b84e9bf2e794e9&file_type=json&sort_order=desc&limit=28&observation_start=2024-05-17",
+    "cb_balance_sheets: 429 Client Error: Too Many Requests for url: https://api.stlouisfed.org/fred/series/observations?series_id=WALCL&api_key=f1c6e69efac7f3d864b84e9bf2e794e9&file_type=json&sort_order=desc&limit=10&observation_start=2024-05-17"
+  ]
 }

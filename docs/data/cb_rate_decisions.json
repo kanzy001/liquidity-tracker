@@ -6998,5 +6998,58 @@
         "delta_bps": -550.0
       }
     }
+  },
+  {
+    "date": "2026-05-31",
+    "hikes": 1,
+    "cuts": 4,
+    "holds": 2,
+    "total_cbs": 7,
+    "cut_ratio": 0.5714,
+    "hike_ratio": 0.1429,
+    "details": {
+      "Federal Reserve": {
+        "decision": "cut",
+        "current": 3.64,
+        "year_ago": 4.33,
+        "delta_bps": -69.0
+      },
+      "ECB": {
+        "decision": "hold",
+        "current": 2.0,
+        "year_ago": 2.0,
+        "delta_bps": 0.0
+      },
+      "Bank of Canada": {
+        "decision": "cut",
+        "current": 2.251,
+        "year_ago": 2.74,
+        "delta_bps": -48.9
+      },
+      "Peoples Bank China": {
+        "decision": "hold",
+        "current": 2.9,
+        "year_ago": 2.9,
+        "delta_bps": 0.0
+      },
+      "Reserve Bank India": {
+        "decision": "cut",
+        "current": 5.5,
+        "year_ago": 6.5,
+        "delta_bps": -100.0
+      },
+      "Central Bank Brazil": {
+        "decision": "hike",
+        "current": 14.75,
+        "year_ago": 14.25,
+        "delta_bps": 50.0
+      },
+      "SARB South Africa": {
+        "decision": "cut",
+        "current": 6.75,
+        "year_ago": 7.5,
+        "delta_bps": -75.0
+      }
+    }
   }
 ]
