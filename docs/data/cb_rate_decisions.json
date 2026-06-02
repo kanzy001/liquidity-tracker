@@ -7116,5 +7116,52 @@
         "delta_bps": -550.0
       }
     }
+  },
+  {
+    "date": "2026-06-02",
+    "hikes": 1,
+    "cuts": 5,
+    "holds": 0,
+    "total_cbs": 6,
+    "cut_ratio": 0.8333,
+    "hike_ratio": 0.1667,
+    "details": {
+      "Bank of Japan": {
+        "decision": "hike",
+        "current": 0.727,
+        "year_ago": 0.477,
+        "delta_bps": 25.0
+      },
+      "Norges Bank": {
+        "decision": "cut",
+        "current": 4.0,
+        "year_ago": 4.498,
+        "delta_bps": -49.8
+      },
+      "Reserve Bank India": {
+        "decision": "cut",
+        "current": 5.5,
+        "year_ago": 6.5,
+        "delta_bps": -100.0
+      },
+      "Bank of Korea": {
+        "decision": "cut",
+        "current": 2.517,
+        "year_ago": 2.769,
+        "delta_bps": -25.2
+      },
+      "SARB South Africa": {
+        "decision": "cut",
+        "current": 6.75,
+        "year_ago": 7.5,
+        "delta_bps": -75.0
+      },
+      "Bank of Indonesia": {
+        "decision": "cut",
+        "current": 4.19,
+        "year_ago": 5.71,
+        "delta_bps": -152.0
+      }
+    }
   }
 ]
