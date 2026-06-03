@@ -7163,5 +7163,46 @@
         "delta_bps": -152.0
       }
     }
+  },
+  {
+    "date": "2026-06-03",
+    "hikes": 0,
+    "cuts": 4,
+    "holds": 1,
+    "total_cbs": 5,
+    "cut_ratio": 0.8,
+    "hike_ratio": 0.0,
+    "details": {
+      "ECB": {
+        "decision": "hold",
+        "current": 2.0,
+        "year_ago": 2.0,
+        "delta_bps": 0.0
+      },
+      "Bank of Canada": {
+        "decision": "cut",
+        "current": 2.251,
+        "year_ago": 2.74,
+        "delta_bps": -48.9
+      },
+      "Reserve Bank India": {
+        "decision": "cut",
+        "current": 5.5,
+        "year_ago": 6.5,
+        "delta_bps": -100.0
+      },
+      "Bank of Korea": {
+        "decision": "cut",
+        "current": 2.517,
+        "year_ago": 2.769,
+        "delta_bps": -25.2
+      },
+      "Central Bank Turkey": {
+        "decision": "cut",
+        "current": 35.5,
+        "year_ago": 41.0,
+        "delta_bps": -550.0
+      }
+    }
   }
 ]
