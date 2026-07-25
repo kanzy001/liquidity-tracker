@@ -12049,5 +12049,100 @@
         "delta_bps": -900.0
       }
     }
+  },
+  {
+    "date": "2026-07-25",
+    "hikes": 2,
+    "cuts": 9,
+    "holds": 3,
+    "total_cbs": 14,
+    "cut_ratio": 0.6429,
+    "hike_ratio": 0.1429,
+    "details": {
+      "Federal Reserve": {
+        "decision": "cut",
+        "current": 3.63,
+        "year_ago": 4.33,
+        "delta_bps": -70.0
+      },
+      "ECB": {
+        "decision": "hold",
+        "current": 2.25,
+        "year_ago": 2.25,
+        "delta_bps": 0.0
+      },
+      "Bank of Japan": {
+        "decision": "hike",
+        "current": 0.841,
+        "year_ago": 0.477,
+        "delta_bps": 36.4
+      },
+      "Bank of Canada": {
+        "decision": "cut",
+        "current": 2.267,
+        "year_ago": 2.744,
+        "delta_bps": -47.7
+      },
+      "Norges Bank": {
+        "decision": "cut",
+        "current": 4.25,
+        "year_ago": 4.412,
+        "delta_bps": -16.2
+      },
+      "Reserve Bank NZ": {
+        "decision": "cut",
+        "current": 4.33,
+        "year_ago": 5.49,
+        "delta_bps": -116.0
+      },
+      "Peoples Bank China": {
+        "decision": "hold",
+        "current": 2.9,
+        "year_ago": 2.9,
+        "delta_bps": 0.0
+      },
+      "Reserve Bank India": {
+        "decision": "cut",
+        "current": 5.5,
+        "year_ago": 6.25,
+        "delta_bps": -75.0
+      },
+      "Bank of Korea": {
+        "decision": "hold",
+        "current": 2.537,
+        "year_ago": 2.52,
+        "delta_bps": 1.7
+      },
+      "Bank of Mexico": {
+        "decision": "cut",
+        "current": 5.19,
+        "year_ago": 6.65,
+        "delta_bps": -146.0
+      },
+      "Central Bank Brazil": {
+        "decision": "cut",
+        "current": 14.39,
+        "year_ago": 14.84,
+        "delta_bps": -45.0
+      },
+      "SARB South Africa": {
+        "decision": "cut",
+        "current": 7.0,
+        "year_ago": 7.25,
+        "delta_bps": -25.0
+      },
+      "Bank of Indonesia": {
+        "decision": "hike",
+        "current": 5.88,
+        "year_ago": 5.38,
+        "delta_bps": 50.0
+      },
+      "Central Bank Turkey": {
+        "decision": "cut",
+        "current": 35.5,
+        "year_ago": 44.5,
+        "delta_bps": -900.0
+      }
+    }
   }
 ]
