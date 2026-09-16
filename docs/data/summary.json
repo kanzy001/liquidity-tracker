@@ -1,14 +1,14 @@
 {
-  "as_of": "2026-09-15T10:42:12.640682+00:00",
-  "scrape_started": "2026-09-15T10:42:04.270401+00:00",
+  "as_of": "2026-09-16T10:30:59.310194+00:00",
+  "scrape_started": "2026-09-16T10:30:12.847881+00:00",
   "status": "success",
   "errors": [],
   "fed_net_liquidity": {
     "date": "2026-09-09",
     "fed_assets": 6740619.0,
     "tga": 883335.0,
-    "rrp": 1.42,
-    "net_liq": 5857282.58
+    "rrp": 0.7,
+    "net_liq": 5857283.3
   },
   "global_m2": {
     "date": "2026-07-01",
@@ -22,18 +22,18 @@
   "cb_balance_sheets": {
     "date": "2026-09-09",
     "fed_bs": 6740619.0,
-    "ecb_bs": 6385152.24,
+    "ecb_bs": 6384135.96,
     "pboc_bs": 0.0,
-    "total_bs": 13125771.24
+    "total_bs": 13124754.96
   },
   "cb_rate_decisions": {
-    "date": "2026-09-15",
-    "hikes": 2,
-    "cuts": 9,
-    "holds": 3,
+    "date": "2026-09-16",
+    "hikes": 3,
+    "cuts": 7,
+    "holds": 4,
     "total_cbs": 14,
-    "cut_ratio": 0.6429,
-    "hike_ratio": 0.1429,
+    "cut_ratio": 0.5,
+    "hike_ratio": 0.2143,
     "details": {
       "Federal Reserve": {
         "decision": "cut",
@@ -49,21 +49,21 @@
       },
       "Bank of Japan": {
         "decision": "hike",
-        "current": 0.841,
+        "current": 0.977,
         "year_ago": 0.477,
-        "delta_bps": 36.4
+        "delta_bps": 50.0
       },
       "Bank of Canada": {
         "decision": "cut",
-        "current": 2.267,
-        "year_ago": 2.744,
-        "delta_bps": -47.7
+        "current": 2.25,
+        "year_ago": 2.753,
+        "delta_bps": -50.3
       },
       "Norges Bank": {
-        "decision": "cut",
+        "decision": "hold",
         "current": 4.25,
-        "year_ago": 4.412,
-        "delta_bps": -16.2
+        "year_ago": 4.25,
+        "delta_bps": 0.0
       },
       "Reserve Bank NZ": {
         "decision": "cut",
@@ -84,57 +84,56 @@
         "delta_bps": -25.0
       },
       "Bank of Korea": {
-        "decision": "hold",
-        "current": 2.537,
-        "year_ago": 2.52,
-        "delta_bps": 1.7
+        "decision": "hike",
+        "current": 2.809,
+        "year_ago": 2.506,
+        "delta_bps": 30.3
       },
       "Bank of Mexico": {
         "decision": "cut",
-        "current": 5.19,
-        "year_ago": 6.65,
-        "delta_bps": -146.0
+        "current": 5.09,
+        "year_ago": 6.21,
+        "delta_bps": -112.0
       },
       "Central Bank Brazil": {
         "decision": "cut",
-        "current": 14.39,
-        "year_ago": 14.84,
-        "delta_bps": -45.0
+        "current": 14.06,
+        "year_ago": 15.0,
+        "delta_bps": -94.0
       },
       "SARB South Africa": {
-        "decision": "cut",
+        "decision": "hold",
         "current": 7.0,
-        "year_ago": 7.25,
-        "delta_bps": -25.0
+        "year_ago": 7.0,
+        "delta_bps": 0.0
       },
       "Bank of Indonesia": {
         "decision": "hike",
-        "current": 5.88,
-        "year_ago": 5.38,
-        "delta_bps": 50.0
+        "current": 6.06,
+        "year_ago": 4.65,
+        "delta_bps": 141.0
       },
       "Central Bank Turkey": {
         "decision": "cut",
         "current": 35.5,
-        "year_ago": 44.5,
-        "delta_bps": -900.0
+        "year_ago": 41.5,
+        "delta_bps": -600.0
       }
     }
   },
   "asset_prices": {
-    "date": "2026-09-15",
-    "spx": 7619.98,
-    "btc": 76917.0
+    "date": "2026-09-16",
+    "spx": 7585.73,
+    "btc": 75928.0
   },
   "sp500_ma": {
-    "as_of": "2026-09-14",
-    "price": 7619.98,
-    "sma50": 7607.34,
-    "sma200": 7162.55,
-    "ema21": 7661.51,
+    "as_of": "2026-09-15",
+    "price": 7585.73,
+    "sma50": 7610.07,
+    "sma200": 7167.13,
+    "ema21": 7654.62,
     "series": {
       "dates": [
-        "2025-07-07",
         "2025-07-08",
         "2025-07-09",
         "2025-07-10",
@@ -433,10 +432,10 @@
         "2026-09-09",
         "2026-09-10",
         "2026-09-11",
-        "2026-09-14"
+        "2026-09-14",
+        "2026-09-15"
       ],
       "closes": [
-        6229.98,
         6225.52,
         6263.26,
         6280.46,
@@ -735,10 +734,10 @@
         7636.36,
         7591.7,
         7656.98,
-        7619.98
+        7619.98,
+        7585.73
       ],
       "sma50": [
-        5887.55,
         5904.63,
         5919.45,
         5934.21,
@@ -1037,10 +1036,10 @@
         7598.1,
         7602.02,
         7603.86,
-        7607.34
+        7607.34,
+        7610.07
       ],
       "sma200": [
-        5842.77,
         5845.76,
         5848.71,
         5851.94,
@@ -1339,10 +1338,10 @@
         7147.05,
         7152.02,
         7157.28,
-        7162.55
+        7162.55,
+        7167.13
       ],
       "ema21": [
-        6091.58,
         6103.76,
         6118.26,
         6133.01,
@@ -1641,7 +1640,8 @@
         7674.01,
         7666.53,
         7665.66,
-        7661.51
+        7661.51,
+        7654.62
       ]
     }
   }
