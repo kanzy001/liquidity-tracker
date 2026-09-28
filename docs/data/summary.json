@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-09-27T11:03:14.465731+00:00",
-  "scrape_started": "2026-09-27T11:02:53.871009+00:00",
+  "as_of": "2026-09-28T12:23:39.299629+00:00",
+  "scrape_started": "2026-09-28T12:23:27.566619+00:00",
   "status": "success",
   "errors": [],
   "fed_net_liquidity": {
@@ -27,13 +27,13 @@
     "total_bs": 13118059.16
   },
   "cb_rate_decisions": {
-    "date": "2026-09-27",
-    "hikes": 4,
+    "date": "2026-09-28",
+    "hikes": 3,
     "cuts": 7,
-    "holds": 3,
+    "holds": 4,
     "total_cbs": 14,
     "cut_ratio": 0.5,
-    "hike_ratio": 0.2857,
+    "hike_ratio": 0.2143,
     "details": {
       "Federal Reserve": {
         "decision": "cut",
@@ -42,10 +42,10 @@
         "delta_bps": -70.0
       },
       "ECB": {
-        "decision": "hike",
+        "decision": "hold",
         "current": 2.5,
-        "year_ago": 2.25,
-        "delta_bps": 25.0
+        "year_ago": 2.5,
+        "delta_bps": 0.0
       },
       "Bank of Japan": {
         "decision": "hike",
@@ -122,9 +122,9 @@
     }
   },
   "asset_prices": {
-    "date": "2026-09-27",
+    "date": "2026-09-28",
     "spx": 7743.41,
-    "btc": 84865.0
+    "btc": 83310.0
   },
   "sp500_ma": {
     "as_of": "2026-09-25",
