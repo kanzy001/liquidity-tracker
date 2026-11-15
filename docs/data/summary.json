@@ -1,6 +1,6 @@
 {
-  "as_of": "2026-11-14T12:43:38.148381+00:00",
-  "scrape_started": "2026-11-14T12:43:31.452612+00:00",
+  "as_of": "2026-11-15T13:10:53.278174+00:00",
+  "scrape_started": "2026-11-15T13:10:38.476164+00:00",
   "status": "success",
   "errors": [],
   "fed_net_liquidity": {
@@ -27,7 +27,7 @@
     "total_bs": 13145093.84
   },
   "cb_rate_decisions": {
-    "date": "2026-11-14",
+    "date": "2026-11-15",
     "hikes": 4,
     "cuts": 7,
     "holds": 3,
@@ -68,8 +68,8 @@
       "Reserve Bank NZ": {
         "decision": "cut",
         "current": 4.33,
-        "year_ago": 4.77,
-        "delta_bps": -44.0
+        "year_ago": 4.79,
+        "delta_bps": -46.0
       },
       "Peoples Bank China": {
         "decision": "hold",
@@ -122,9 +122,9 @@
     }
   },
   "asset_prices": {
-    "date": "2026-11-14",
+    "date": "2026-11-15",
     "spx": 7561.67,
-    "btc": 67116.0
+    "btc": 65568.0
   },
   "sp500_ma": {
     "as_of": "2026-11-13",
